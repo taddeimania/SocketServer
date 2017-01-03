@@ -12,13 +12,10 @@ namespace SocketServer
         public static ManualResetEvent allDone = new ManualResetEvent(false);
         private static Dictionary<IntPtr, Socket> connections = new Dictionary<IntPtr, Socket>();
 
-        public static void StartListening()
+        public static void StartListening(IPEndPoint localEndPoint)
         {
             byte[] bytes = new Byte[1024];
 
-            IPHostEntry ipHostInfo = Dns.GetHostEntry(Dns.GetHostName());
-            IPAddress ipAddress = ipHostInfo.AddressList[1];
-            IPEndPoint localEndPoint = new IPEndPoint(ipAddress, 11000);
 
             Socket listener = new Socket(AddressFamily.InterNetwork,
                 SocketType.Stream, ProtocolType.Tcp);
@@ -45,7 +42,6 @@ namespace SocketServer
 
             Console.WriteLine("\nPress ENTER to continue...");
             Console.Read();
-
         }
 
         public static void AcceptCallback(IAsyncResult ar)
@@ -80,7 +76,6 @@ namespace SocketServer
 
             if (bytesRead > 0)
             {
-
                 StateReader reader = new StateReader(state);
                 content = reader.data;
                 if (content.Count > 1)

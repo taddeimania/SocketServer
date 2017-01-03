@@ -1,6 +1,5 @@
 ﻿using System;
-
-
+using System.Net;
 
 namespace SocketServer
 {
@@ -8,8 +7,12 @@ namespace SocketServer
     {
         static void Main(string[] args)
         {
-            Console.WriteLine("Server listening....");
-            AsynchronousSocketListener.StartListening();
+            IPHostEntry ipHostInfo = Dns.GetHostEntry(Dns.GetHostName());
+            IPAddress ipAddress = ipHostInfo.AddressList[1];
+            IPEndPoint localEndPoint = new IPEndPoint(ipAddress, 11000);
+
+            Console.WriteLine($"Server listening....\n{ipAddress}:11000");
+            AsynchronousSocketListener.StartListening(localEndPoint);
         }
     }
 }
