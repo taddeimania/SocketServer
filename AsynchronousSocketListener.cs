@@ -88,8 +88,7 @@ namespace SocketServer
                         if (client.Key != handler.Handle)
                           Send(client.Value, content);
                     }
-                    state = new StateObject();
-                    state.workSocket = handler;
+                    state.Reset();
 
                 }
                 handler.BeginReceive(state.buffer, 0, StateObject.BufferSize, 0, new AsyncCallback(ReadCallback), state);
@@ -100,12 +99,12 @@ namespace SocketServer
         {
             MemoryStream ms = new MemoryStream();
             BinaryWriter bw = new BinaryWriter(ms);
-
             foreach (var dataPoint in data)
             {
                 bw.Write(dataPoint);
             }
             byte[] byteData = ms.ToArray();
+            Console.WriteLine(string.Join(", ", byteData));
             handler.BeginSend(byteData, 0, byteData.Length, 0, new AsyncCallback(SendCallback), handler);
         }
 
