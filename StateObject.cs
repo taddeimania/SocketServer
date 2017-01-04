@@ -9,13 +9,13 @@ namespace SocketServer
     {
 
         private BinaryReader reader;
-
+        public List<uint> data;
         private Dictionary<int, string[]> bufferMap = new Dictionary<int, string[]>()
         {
             {1, new string[]{"u16", "u16" } },
+            {100, new string[]{"u16", "u16" } },
             {2, new string[]{"u16", "u16", "u16", "u16" } }
         };
-        public List<uint> data;
 
         public StateReader(StateObject state)
         {
@@ -25,6 +25,8 @@ namespace SocketServer
             string[] format = bufferMap[command];
             data = new List<uint>();
             data.Add(command);
+            data.Add((uint)state.workSocket.Handle.ToInt32());
+
             foreach (string formatter in format)
             {
                 switch (formatter)
@@ -38,6 +40,7 @@ namespace SocketServer
                 }
             }
         }
+
         public override string ToString()
         {
             return $"[{string.Join(", ", data)}]";
@@ -49,5 +52,10 @@ namespace SocketServer
         public Socket workSocket = null;
         public const int BufferSize = 1024;
         public byte[] buffer = new byte[BufferSize];
+
+        public void Reset()
+        {
+            buffer = new byte[BufferSize];
+        }
     }
 }
